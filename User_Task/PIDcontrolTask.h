@@ -147,7 +147,7 @@ else if(val>=max)\
 #define STICK_TO_FORWARD_BACK_ANGLE_INC_FACT       3.68f   
 #define STICK_TO_LEFT_RIGHT_ANGLE_INC_FACT         3.68f
 
-//PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//PID½á¹¹ÌåÕûºÏ
 enum{
     LLAST	= 0,
     LAST 	= 1,
@@ -162,17 +162,20 @@ typedef struct
   float i;
   float d;
     
-  float set[3];				//Ä¿ï¿½ï¿½Öµ,ï¿½ï¿½ï¿½ï¿½NOWï¿½ï¿½ LASTï¿½ï¿½ LLASTï¿½ï¿½ï¿½Ï´ï¿½
-  float get[3];				//ï¿½ï¿½ï¿½ï¿½Öµ
-  float err[3];				//ï¿½ï¿½ï¿½
+  float set[3];				//Ä¿±êÖµ,°üº¬NOW£¬ LAST£¬ LLASTÉÏÉÏ´Î
+  float get[3];				//²âÁ¿Öµ
+  float err[3];				//Îó²î
 	
-	float Voltage;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	float Voltage_max;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	float Voltage_min;     //ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	float Voltage;     //»ý·ÖÁ¿
+	float Voltage_max;     //×î´ó»ý·ÖÁ¿
+	float Voltage_min;     //×îÐ¡»ý·ÖÁ¿
 	
     
-    float pout;							//pï¿½ï¿½ï¿½
-    float dout;							//dï¿½ï¿½ï¿½
+    float pout;							//pÊä³ö
+    float iout;							//iÊä³ö
+    float dout;							//dÊä³ö
+}pid_t;
+	
 
 
 void Chassis_And_Gimbal_Data_Init(void);
