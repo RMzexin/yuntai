@@ -147,6 +147,33 @@ else if(val>=max)\
 #define STICK_TO_FORWARD_BACK_ANGLE_INC_FACT       3.68f   
 #define STICK_TO_LEFT_RIGHT_ANGLE_INC_FACT         3.68f
 
+//PID�ṹ������
+enum{
+    LLAST	= 0,
+    LAST 	= 1,
+    NOW 	= 2,
+    
+    POSITION_PID,
+    DELTA_PID,
+};
+typedef struct 
+	{
+	float p;
+  float i;
+  float d;
+    
+  float set[3];				//Ŀ��ֵ,����NOW�� LAST�� LLAST���ϴ�
+  float get[3];				//����ֵ
+  float err[3];				//���
+	
+	float Voltage;     //������
+	float Voltage_max;     //��������
+	float Voltage_min;     //��С������
+	
+    
+    float pout;							//p���
+    float dout;							//d���
+
 
 void Chassis_And_Gimbal_Data_Init(void);
 void PID_Init(void);
