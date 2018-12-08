@@ -1,7 +1,6 @@
 #include "PIDcontrolTask.h"
 #include "RemoteTask.h"
 #include <math.h>
-
 RampGen_t GMPitchRamp = RAMP_GEN_DAFAULT;
 RampGen_t   GMYawRamp = RAMP_GEN_DAFAULT;
 

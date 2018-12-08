@@ -1,6 +1,5 @@
 #ifndef _PID_CONTROL_TAKE_H_
 #define _PID_CONTROL_TAKE_H_
-
 #include "main.h"
 #include "stm32f4xx.h"
 #include "RemoteTask.h"	
@@ -148,7 +147,34 @@ else if(val>=max)\
 #define STICK_TO_LEFT_RIGHT_ANGLE_INC_FACT         3.68f
 
 //PID结构体整合
-
+enum{
+    LLAST	= 0,
+    LAST 	= 1,
+    NOW 	= 2,
+    
+    POSITION_PID,
+    DELTA_PID,
+};
+typedef struct 
+	{
+	float p;
+  float i;
+  float d;
+    
+  float set[3];				//目标值,包含NOW， LAST， LLAST上上次
+  float get[3];				//测量值
+  float err[3];				//误差
+	
+	float Voltage;     //积分量
+	float Voltage_max;     //最大积分量
+	float Voltage_min;     //最小积分量
+	
+    
+    float pout;							//p输出
+    float iout;							//i输出
+    float dout;							//d输出
+}pid_t;
+	
 
 
 void Chassis_And_Gimbal_Data_Init(void);
