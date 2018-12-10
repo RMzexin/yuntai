@@ -20,6 +20,7 @@
 #include "RemoteTask.h"
 #include "PIDcontrolTask.h"
 #include "DataProcessingTask.h"
+#include "pid.h"
 #include "includes.h"
 #include "os_app_hooks.h"
 
