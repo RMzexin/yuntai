@@ -64,19 +64,19 @@ void Print_PID_Data(void)
 	  OS_ERR err;
 	
     unsigned char i;         
-    unsigned char Send_Count=5;
+    unsigned char Send_Count=8;
 
-      DataScope_Get_Channel_Data(CM1pid.get[NOW], 1 );
-			DataScope_Get_Channel_Data(CM1pid.set[NOW], 2 );
-			DataScope_Get_Channel_Data(CM1pid.Voltage, 3 );
-			DataScope_Get_Channel_Data(CM1pid.pidout, 4 );
-			DataScope_Get_Channel_Data(CM1pid.pout, 5 );
-//			DataScope_Get_Channel_Data(CM1pid.pidout, 6 );
-//			DataScope_Get_Channel_Data(CM1pid.pidout, 7 );
-//			DataScope_Get_Channel_Data(PID_yawSpeed_value.actual, 8 );
+      DataScope_Get_Channel_Data(CM1pid.pidout, 1 );
+			DataScope_Get_Channel_Data(CM2pid.pidout, 2 );
+			DataScope_Get_Channel_Data(CM3pid.pidout, 3 );
+			DataScope_Get_Channel_Data(CM4pid.pidout, 4 );
+			DataScope_Get_Channel_Data(CM1pid.Voltage, 5 );
+			DataScope_Get_Channel_Data(CM2pid.Voltage, 6 );
+			DataScope_Get_Channel_Data(CM3pid.Voltage, 7 );
+			DataScope_Get_Channel_Data(CM4pid.Voltage, 8 );
 //			DataScope_Get_Channel_Data(PID_CM1_out, 9 );
 //			DataScope_Get_Channel_Data(PID_CM2_out, 10 );
-          Send_Count = DataScope_Data_Generate(5); 
+          Send_Count = DataScope_Data_Generate(8); 
           for( i = 0 ; i < Send_Count; i++) 
           {
              while((USART3->SR&0X40)==0);  
