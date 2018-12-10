@@ -16,6 +16,10 @@ extern PID_t CM1PID;
 extern PID_t CM2PID;
 extern PID_t CM3PID;
 extern PID_t CM4PID;
+extern pid_t CM1pid;
+extern pid_t CM2pid;
+extern pid_t CM3pid;
+extern pid_t CM4pid;
 
 extern PID_value_t PID_pitchPosition_value;  //pitch位置环理想值 实际值
 extern PID_value_t PID_yawPosition_value;    //yaw位置环理想值 实际值
@@ -60,19 +64,19 @@ void Print_PID_Data(void)
 	  OS_ERR err;
 	
     unsigned char i;         
-    unsigned char Send_Count=8;
+    unsigned char Send_Count=5;
 
-      DataScope_Get_Channel_Data(PID_pitchPosition_value.ideal, 1 );
-			DataScope_Get_Channel_Data(PID_pitchPosition_value.actual, 2 );
-			DataScope_Get_Channel_Data(PID_yawPosition_value.ideal, 3 );
-			DataScope_Get_Channel_Data(PID_yawPosition_value.actual, 4 );
-			DataScope_Get_Channel_Data(PID_pitchSpeed_value.ideal, 5 );
-			DataScope_Get_Channel_Data(PID_pitchSpeed_value.actual, 6 );
-			DataScope_Get_Channel_Data(PID_yawSpeed_value.ideal, 7 );
-			DataScope_Get_Channel_Data(PID_yawSpeed_value.actual, 8 );
+      DataScope_Get_Channel_Data(CM1pid.get[NOW], 1 );
+			DataScope_Get_Channel_Data(CM1pid.set[NOW], 2 );
+			DataScope_Get_Channel_Data(CM1pid.Voltage, 3 );
+			DataScope_Get_Channel_Data(CM1pid.pidout, 4 );
+			DataScope_Get_Channel_Data(CM1pid.pout, 5 );
+//			DataScope_Get_Channel_Data(CM1pid.pidout, 6 );
+//			DataScope_Get_Channel_Data(CM1pid.pidout, 7 );
+//			DataScope_Get_Channel_Data(PID_yawSpeed_value.actual, 8 );
 //			DataScope_Get_Channel_Data(PID_CM1_out, 9 );
 //			DataScope_Get_Channel_Data(PID_CM2_out, 10 );
-          Send_Count = DataScope_Data_Generate(8); 
+          Send_Count = DataScope_Data_Generate(5); 
           for( i = 0 ; i < Send_Count; i++) 
           {
              while((USART3->SR&0X40)==0);  
