@@ -11,20 +11,20 @@ PID_t Position_yawPID;          //yaw位置环PID计算参数
 PID_t Speed_pitchPID;           //pitch速度环PID计算参数
 PID_t Speed_yawPID;             //yaw速度环PID计算参数
 
-PID_t CM1PID;
-PID_t CM2PID; 
-PID_t CM3PID; 
-PID_t CM4PID; 
+PID_value_t PID_CM1_value; 
+PID_value_t PID_CM2_value;
+PID_value_t PID_CM3_value;
+PID_value_t PID_CM4_value;
+
+pid_t CM1pid={100,6.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000};
+pid_t CM2pid={100,6.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
+pid_t CM3pid={100,6.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
+pid_t CM4pid={100,6.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 
 PID_value_t PID_pitchPosition_value;  //pitch位置环理想值 实际值
 PID_value_t PID_yawPosition_value;    //yaw位置环理想值 实际值
 PID_value_t PID_pitchSpeed_value;     //pitch速度环理想值 实际值
 PID_value_t PID_yawSpeed_value;       //yaw速度环理想值 实际值
-
-PID_value_t PID_CM1_value; 
-PID_value_t PID_CM2_value;
-PID_value_t PID_CM3_value;
-PID_value_t PID_CM4_value;
 
 PID_Angle_Speed_t PID_Angle_Speed;
 
@@ -35,10 +35,6 @@ float PID_yaw_Position_out;
 float PID_pitch_Speed_out;
 float PID_yaw_Speed_out;
 
-float PID_CM1_out;
-float PID_CM2_out;
-float PID_CM3_out;
-float PID_CM4_out;
 
 void Chassis_And_Gimbal_Data_Init(void)
 {
@@ -50,14 +46,6 @@ void Chassis_And_Gimbal_Data_Init(void)
 	PID_pitchPosition_value.ideal = gimbal_ref.pitch_angle_dynamic_ref;
 	PID_pitchPosition_value.actual =GMPitchEncoder.ecd_angle;
 	
-	PID_CM1_value.ideal =0;
-	PID_CM1_value.actual =0;
-  PID_CM2_value.ideal =0;
-	PID_CM2_value.actual =0;
-  PID_CM3_value.ideal =0;
-	PID_CM3_value.actual =0;
-  PID_CM4_value.ideal =0;
-	PID_CM4_value.actual =0;	
 	
   GMPitchRamp.SetScale(&GMPitchRamp, PREPARE_TIME_TICK_MS);
 	GMYawRamp.SetScale(&GMYawRamp, PREPARE_TIME_TICK_MS);
@@ -88,33 +76,14 @@ void PID_Init(void) //PID各参数初始化为0
 	Speed_pitchPID.Ideal_Next=0.00;
 	Speed_pitchPID.Ideal_Last=0.00;
 	
-	CM1PID.Ideal_Now=0.00;
-	CM1PID.D_Voltage=0.00;
-	CM1PID.Ideal_Next=0.00;
-	CM1PID.Ideal_Last=0.00;
-	
-	CM2PID.Ideal_Now=0.00;
-	CM2PID.D_Voltage=0.00;
-	CM2PID.Ideal_Next=0.00;
-	CM2PID.Ideal_Last=0.00;
-	
-	CM3PID.Ideal_Now=0.00;
-	CM3PID.D_Voltage=0.00;
-	CM3PID.Ideal_Next=0.00;
-	CM3PID.Ideal_Last=0.00;
-	
-	CM4PID.Ideal_Now=0.00;
-	CM4PID.D_Voltage=0.00;
-	CM4PID.Ideal_Next=0.00;
-	CM4PID.Ideal_Last=0.00;
-	
+
 }
 
                     
  void Set_Gimbal_Motor_Output(void)	 //can 输出
 {	
- 	Set_Gimbal_Current(CAN1, (int16_t)PID_yaw_Speed_out, (int16_t)PID_pitch_Speed_out);	
-//   Set_CM_Speed(CAN1,(int16_t)PID_CM1_out,(int16_t)PID_CM2_out,(int16_t)PID_CM3_out,(int16_t)PID_CM4_out);
+// 	Set_Gimbal_Current(CAN1, (int16_t)PID_yaw_Speed_out, (int16_t)PID_pitch_Speed_out);	
+	Set_CM_Speed(CAN1,(int16_t)CM1pid.pidout,(int16_t)CM2pid.pidout,(int16_t)CM3pid.pidout,(int16_t)CM4pid.pidout);
 }
 
 
@@ -126,10 +95,10 @@ void PID_Init(void) //PID各参数初始化为0
 		gimbal_ref.left_right_ref           =((Get_ch0_Data()-1024)*STICK_TO_FORWARD_BACK_ANGLE_INC_FACT) ;
     gimbal_ref.forward_back_ref         =((Get_ch1_Data()-1024)*STICK_TO_LEFT_RIGHT_ANGLE_INC_FACT);
 	
-	  PID_CM1_value.ideal = -gimbal_ref.forward_back_ref*0.075f + gimbal_ref.left_right_ref*0.075f ;
-	  PID_CM2_value.ideal = gimbal_ref.forward_back_ref*0.075f + gimbal_ref.left_right_ref*0.075f;
-	  PID_CM3_value.ideal = -gimbal_ref.forward_back_ref*0.075f + gimbal_ref.left_right_ref*0.075f;
-	  PID_CM4_value.ideal = gimbal_ref.forward_back_ref*0.075f + gimbal_ref.left_right_ref*0.075f;
+	  PID_CM1_value.ideal = -gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f ;
+	  PID_CM2_value.ideal = gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f;
+	  PID_CM3_value.ideal = -gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f;
+	  PID_CM4_value.ideal = gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f;
 
 	/* not used to control, just as a flag */ 
     gimbal_ref.pitch_speed_ref =(Get_ch3_Data()-1024);    //speed_ref仅做输入量判断用
@@ -295,146 +264,10 @@ void PID_calculate_speed_self(void)//云台速度环PID算法
 
 void PID_calculate_chassis_self(void)//底盘PID算法
 {
-	static unsigned short index = 0;
-	static unsigned short index_1 = 0;
-	static unsigned short index_2 = 0;
-	static unsigned short index_3 = 0;
-	
-	PID_CM1_value.actual=CM1Encoder.rotor_speed ;
-	PID_CM2_value.actual=CM2Encoder.rotor_speed ;
-	PID_CM3_value.actual=CM3Encoder.rotor_speed ;
-	PID_CM4_value.actual=CM4Encoder.rotor_speed ;
-	
-  CM1PID.Ideal_Last=CM1PID.Ideal_Now;	
-	CM1PID.Ideal_Now=PID_CM1_value.ideal-PID_CM1_value.actual;
-
-    if(CM1PID.D_Voltage>CM1_D_Voltage_MAX)
-       {
-         index=0.0;
-				 if(CM1PID.Ideal_Now<0)
-					CM1PID.D_Voltage+=CM1PID.Ideal_Now; 
-       }
-			 else if(CM1PID.D_Voltage<CM1_D_Voltage_MIN)
-       {
-         index=0.0;
-				 if(CM1PID.Ideal_Now>0)
-					CM1PID.D_Voltage+=CM1PID.Ideal_Now; 
-       }
-			 else if(fabs(CM1PID.D_Voltage)<CM1_D_Voltage_MAX-(CM1_D_Voltage_MAX/4))
-		   {
-         index=1.0;
-				 CM1PID.D_Voltage+=CM1PID.Ideal_Now;
-			 }
-			 else
-			{
-       index=(CM1_D_Voltage_MAX-fabs(CM1PID.D_Voltage))/(CM1_D_Voltage_MAX/4);
-			CM1PID.D_Voltage+=CM1PID.Ideal_Now;
-			}
-
-		
-	PID_CM1_out=(PID_CM1_KP*CM1PID.Ideal_Now+
-	                       index*PID_CM1_KI*CM1PID.D_Voltage+
-	                       PID_CM1_KD*(CM1PID.Ideal_Now-CM1PID.Ideal_Last));
-			VAL_LIMIT(PID_CM1_out,CHASSIS_OUT_MIN,CHASSIS_OUT_MAX);
-	
-			
-			CM2PID.Ideal_Last=CM2PID.Ideal_Now;	
-	CM2PID.Ideal_Now=PID_CM2_value.ideal-PID_CM2_value.actual;
-
-    if(CM2PID.D_Voltage>CM2_D_Voltage_MAX)
-       {
-         index_1=0.0;
-				 if(CM2PID.Ideal_Now<0)
-					CM2PID.D_Voltage+=CM2PID.Ideal_Now; 
-       }
-			 else if(CM2PID.D_Voltage<CM2_D_Voltage_MIN)
-       {
-         index_1=0.0;
-				 if(CM2PID.Ideal_Now>0)
-					CM2PID.D_Voltage+=CM2PID.Ideal_Now; 
-       }
-			 else if(fabs(CM2PID.D_Voltage)<CM2_D_Voltage_MAX-(CM2_D_Voltage_MAX/4))
-		   {
-         index_1=1.0;
-				 CM2PID.D_Voltage+=CM2PID.Ideal_Now;
-			 }
-			 else
-			{
-       index_1=(CM2_D_Voltage_MAX-fabs(CM2PID.D_Voltage))/(CM2_D_Voltage_MAX/4);
-			CM2PID.D_Voltage+=CM2PID.Ideal_Now;
-			}
-
-		
-	PID_CM2_out=(PID_CM2_KP*CM2PID.Ideal_Now+
-	                       index_1*PID_CM2_KI*CM2PID.D_Voltage+
-	                       PID_CM2_KD*(CM2PID.Ideal_Now-CM2PID.Ideal_Last));
-			VAL_LIMIT(PID_CM2_out,CHASSIS_OUT_MIN,CHASSIS_OUT_MAX);
-			
-			
-			CM3PID.Ideal_Last=CM3PID.Ideal_Now;	
-	CM3PID.Ideal_Now=PID_CM3_value.ideal-PID_CM3_value.actual;
-
-    if(CM3PID.D_Voltage>CM3_D_Voltage_MAX)
-       {
-         index_2=0.0;
-				 if(CM3PID.Ideal_Now<0)
-					CM3PID.D_Voltage+=CM3PID.Ideal_Now; 
-       }
-			 else if(CM3PID.D_Voltage<CM3_D_Voltage_MIN)
-       {
-         index_2=0.0;
-				 if(CM3PID.Ideal_Now>0)
-					CM3PID.D_Voltage+=CM3PID.Ideal_Now; 
-       }
-			 else if(fabs(CM3PID.D_Voltage)<CM3_D_Voltage_MAX-(CM3_D_Voltage_MAX/4))
-		   {
-         index_2=1.0;
-				 CM3PID.D_Voltage+=CM3PID.Ideal_Now;
-			 }
-			 else
-			{
-       index_2=(CM3_D_Voltage_MAX-fabs(CM3PID.D_Voltage))/(CM3_D_Voltage_MAX/4);
-			CM3PID.D_Voltage+=CM3PID.Ideal_Now;
-			}
-
-		
-	PID_CM3_out=(PID_CM3_KP*CM3PID.Ideal_Now+
-	                       index_2*PID_CM3_KI*CM3PID.D_Voltage+
-	                       PID_CM3_KD*(CM3PID.Ideal_Now-CM3PID.Ideal_Last));
-			VAL_LIMIT(PID_CM3_out,CHASSIS_OUT_MIN,CHASSIS_OUT_MAX);
-			
-			CM4PID.Ideal_Last=CM4PID.Ideal_Now;	
-	CM4PID.Ideal_Now=PID_CM4_value.ideal-PID_CM4_value.actual;
-
-    if(CM4PID.D_Voltage>CM4_D_Voltage_MAX)
-       {
-         index_3=0.0;
-				 if(CM4PID.Ideal_Now<0)
-					CM4PID.D_Voltage+=CM4PID.Ideal_Now; 
-       }
-			 else if(CM4PID.D_Voltage<CM4_D_Voltage_MIN)
-       {
-         index_3=0.0;
-				 if(CM4PID.Ideal_Now>0)
-					CM4PID.D_Voltage+=CM4PID.Ideal_Now; 
-       }
-			 else if(fabs(CM4PID.D_Voltage)<CM4_D_Voltage_MAX-(CM4_D_Voltage_MAX/4))
-		   {
-         index_3=1.0;
-				 CM4PID.D_Voltage+=CM4PID.Ideal_Now;
-			 }
-			 else
-			{
-       index_3=(CM4_D_Voltage_MAX-fabs(CM1PID.D_Voltage))/(CM4_D_Voltage_MAX/4);
-			CM4PID.D_Voltage+=CM4PID.Ideal_Now;
-			}
-
-		
-	PID_CM4_out=(PID_CM4_KP*CM4PID.Ideal_Now+
-	                       index_3*PID_CM4_KI*CM4PID.D_Voltage+
-	                       PID_CM4_KD*(CM4PID.Ideal_Now-CM4PID.Ideal_Last));
-			VAL_LIMIT(PID_CM4_out,CHASSIS_OUT_MIN,CHASSIS_OUT_MAX);
-			
+  pid_calculate(&CM1pid,CM1Encoder.rotor_speed,-PID_CM1_value.ideal);	
+	pid_calculate(&CM2pid,CM2Encoder.rotor_speed,-PID_CM2_value.ideal);	
+	pid_calculate(&CM3pid,CM3Encoder.rotor_speed,-PID_CM3_value.ideal);	
+	pid_calculate(&CM4pid,CM4Encoder.rotor_speed,-PID_CM4_value.ideal);	
 	Set_Gimbal_Motor_Output();
 	
 
