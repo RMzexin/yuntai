@@ -104,7 +104,7 @@ void task1_task(void *p_arg)
 void tmr1_callback(void *p_tmr, void *p_arg)
 {
 
-//	  PID_calculate_chassis_self();
+	  PID_calculate_chassis_self();
 }
 	
 
