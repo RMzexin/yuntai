@@ -11,6 +11,10 @@ PID_t Position_yawPID;          //yaw位置环PID计算参数
 PID_t Speed_pitchPID;           //pitch速度环PID计算参数
 PID_t Speed_yawPID;             //yaw速度环PID计算参数
 
+PID_value_t PID_pitchPosition_value;  //pitch位置环理想值 实际值
+PID_value_t PID_yawPosition_value;    //yaw位置环理想值 实际值
+PID_value_t PID_pitchSpeed_value;     //pitch速度环理想值 实际值
+PID_value_t PID_yawSpeed_value;       //yaw速度环理想值 实际值
 PID_value_t PID_CM1_value; 
 PID_value_t PID_CM2_value;
 PID_value_t PID_CM3_value;
@@ -20,15 +24,12 @@ pid_t CM1pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000};
 pid_t CM2pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 pid_t CM3pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 pid_t CM4pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
-
-PID_value_t PID_pitchPosition_value;  //pitch位置环理想值 实际值
-PID_value_t PID_yawPosition_value;    //yaw位置环理想值 实际值
-PID_value_t PID_pitchSpeed_value;     //pitch速度环理想值 实际值
-PID_value_t PID_yawSpeed_value;       //yaw速度环理想值 实际值
+pid_t   YAWPpid={3.66,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000};
+pid_t PITCHPpid={3.5,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t   YAWSpid={41.75,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t PITCHSpid={40,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
 
 PID_Angle_Speed_t PID_Angle_Speed;
-
-
 
 float PID_pitch_Position_out;
 float PID_yaw_Position_out;
@@ -53,37 +54,12 @@ void Chassis_And_Gimbal_Data_Init(void)
 	GMYawRamp.ResetCounter(&GMYawRamp);
 }
 
-void PID_Init(void) //PID各参数初始化为0
-{
-	Position_pitchPID.Ideal_Now=0.00;
-	Position_pitchPID.D_Voltage=0.00;
-	Position_pitchPID.Ideal_Next=0.00;
-	Position_pitchPID.Ideal_Last=0.00;
-	
-	Position_yawPID.Ideal_Now=0.00;
-	Position_yawPID.D_Voltage=0.00;
-	Position_yawPID.Ideal_Next=0.00;
-	Position_yawPID.Ideal_Last=0.00;
-	
-	
-	Speed_pitchPID.Ideal_Now=0.00;
-	Speed_pitchPID.D_Voltage=0.00;
-	Speed_pitchPID.Ideal_Next=0.00;
-	Speed_pitchPID.Ideal_Last=0.00;
-	
-	Speed_pitchPID.Ideal_Now=0.00;
-	Speed_pitchPID.D_Voltage=0.00;
-	Speed_pitchPID.Ideal_Next=0.00;
-	Speed_pitchPID.Ideal_Last=0.00;
-	
 
-}
-
-                    
+                   
  void Set_Gimbal_Motor_Output(void)	 //can 输出
 {	
-// 	Set_Gimbal_Current(CAN1, (int16_t)PID_yaw_Speed_out, (int16_t)PID_pitch_Speed_out);	
-	Set_CM_Speed(CAN1,(int16_t)CM1pid.pidout,(int16_t)CM2pid.pidout,(int16_t)CM3pid.pidout,(int16_t)CM4pid.pidout);
+ 	Set_Gimbal_Current(CAN1, (int16_t)YAWSpid.pidout, (int16_t)PITCHSpid.pidout);	
+	//Set_CM_Speed(CAN1,(int16_t)CM1pid.pidout,(int16_t)CM2pid.pidout,(int16_t)CM3pid.pidout,(int16_t)CM4pid.pidout);
 }
 
 
@@ -99,86 +75,20 @@ void PID_Init(void) //PID各参数初始化为0
 	  PID_CM2_value.ideal = gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f;
 	  PID_CM3_value.ideal = -gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f;
 	  PID_CM4_value.ideal = gimbal_ref.forward_back_ref*0.075f - gimbal_ref.left_right_ref*0.075f;
+	  PID_pitchPosition_value.ideal = gimbal_ref.pitch_angle_dynamic_ref;
+	  PID_yawPosition_value.ideal = gimbal_ref.yaw_angle_dynamic_ref;
 
 	/* not used to control, just as a flag */ 
     gimbal_ref.pitch_speed_ref =(Get_ch3_Data()-1024);    //speed_ref仅做输入量判断用
     gimbal_ref.yaw_speed_ref   =(Get_ch2_Data()-1024);
 	
-
-//	  PID_calculate_chassis_self();
 }
 
 void PID_calculate_position_self(void)//云台位置环PID算法
 { 
-	static unsigned short index = 0;
-	static unsigned short index_1 = 0;
-  PID_pitchPosition_value.ideal = gimbal_ref.pitch_angle_dynamic_ref;
-	PID_pitchPosition_value.actual =GMPitchEncoder.ecd_angle;
-  Position_pitchPID.Ideal_Last=Position_pitchPID.Ideal_Now;	
-	Position_pitchPID.Ideal_Now=PID_pitchPosition_value.ideal-PID_pitchPosition_value.actual;
-
-    if(Position_pitchPID.D_Voltage>Position_pitch_D_Voltage_MAX)
-       {
-         index=0.0;
-				 if(Position_pitchPID.Ideal_Now<0)
-					Position_pitchPID.D_Voltage+=Position_pitchPID.Ideal_Now; 
-       }
-			 else if(Position_pitchPID.D_Voltage<Position_pitch_D_Voltage_MIN)
-       {
-         index=0.0;
-				 if(Position_pitchPID.Ideal_Now>0)
-					Position_pitchPID.D_Voltage+=Position_pitchPID.Ideal_Now; 
-       }
-			 else if(fabs(Position_pitchPID.D_Voltage)<Position_pitch_D_Voltage_MAX-(Position_pitch_D_Voltage_MAX/4))
-		   {
-         index=1.0;
-				 Position_pitchPID.D_Voltage+=Position_pitchPID.Ideal_Now;
-			 }
-			 else
-			{
-       index=(Position_pitch_D_Voltage_MAX-fabs(Position_pitchPID.D_Voltage))/(Position_pitch_D_Voltage_MAX/4);
-			Position_pitchPID.D_Voltage+=Position_pitchPID.Ideal_Now;
-			}
-
-		
-	PID_pitch_Position_out=-(PID_P_Position_KP*Position_pitchPID.Ideal_Now+
-	                       index*PID_P_Position_KI*Position_pitchPID.D_Voltage+
-	                       PID_P_Position_KD*(Position_pitchPID.Ideal_Now-Position_pitchPID.Ideal_Last));
-	
-	
-	
-  PID_yawPosition_value.ideal = gimbal_ref.yaw_angle_dynamic_ref;
-	PID_yawPosition_value.actual =GMYawEncoder.ecd_angle;
-  Position_yawPID.Ideal_Last=Position_yawPID.Ideal_Now;	
-	Position_yawPID.Ideal_Now=PID_yawPosition_value.ideal-PID_yawPosition_value.actual;
-			if(Position_yawPID.D_Voltage>Position_yaw_D_Voltage_MAX)
-       {
-         index_1=0.0;
-				 if(Position_yawPID.Ideal_Now<0)
-					Position_yawPID.D_Voltage+=Position_yawPID.Ideal_Now; 
-       }
-			 else if(Position_yawPID.D_Voltage<Position_yaw_D_Voltage_MIN)
-       {
-         index_1=0.0;
-				 if(Position_yawPID.Ideal_Now>0)
-					Position_yawPID.D_Voltage+=Position_yawPID.Ideal_Now; 
-       }
-		else if(fabs(Position_yawPID.D_Voltage)<Position_yaw_D_Voltage_MAX-(Position_yaw_D_Voltage_MAX/4))
-		   {
-         index_1=1.0;
-				 Position_yawPID.D_Voltage+=Position_yawPID.Ideal_Now;
-			 }
-		else
-			{
-       index_1=(Position_yaw_D_Voltage_MAX-fabs(Position_yawPID.D_Voltage))/(Position_yaw_D_Voltage_MAX/4);
-			Position_yawPID.D_Voltage+=Position_yawPID.Ideal_Now;
-			}
-			
-	PID_yaw_Position_out=-(PID_Y_Position_KP*Position_yawPID.Ideal_Now+
-	                     index_1*PID_Y_Position_KI*Position_yawPID.D_Voltage+
-	                     PID_Y_Position_KD*(Position_yawPID.Ideal_Now-Position_yawPID.Ideal_Last));	
-
-			
+	pid_calculate(&PITCHPpid,GMPitchEncoder.ecd_angle,PID_pitchPosition_value.ideal);	
+	pid_calculate(&YAWPpid,GMYawEncoder.ecd_angle,PID_yawPosition_value.ideal);	
+  PID_calculate_speed_self();	
 }
 
 void YUNTAI_SPEED()
@@ -187,80 +97,13 @@ void YUNTAI_SPEED()
 }
 
 void PID_calculate_speed_self(void)//云台速度环PID算法
-{
-	static unsigned short index = 0;
-	static unsigned short index_1 = 0;			
-	PID_pitchSpeed_value.ideal =PID_pitch_Position_out;
-  Speed_pitchPID.Ideal_Last=Speed_pitchPID.Ideal_Now;	
-	Speed_pitchPID.Ideal_Now=PID_pitchSpeed_value.ideal+PID_pitchSpeed_value.actual;
-    if(Speed_pitchPID.D_Voltage>Speed_pitch_D_Voltage_MAX)
-       {
-         index=1.0;
-				 if(Speed_pitchPID.Ideal_Now<0)
-					Speed_pitchPID.D_Voltage+=Speed_pitchPID.Ideal_Now; 
-       }
-			 else if(Speed_pitchPID.D_Voltage<Speed_pitch_D_Voltage_MIN)
-       {
-         index=1.0;
-				 if(Speed_pitchPID.Ideal_Now>0)
-					Speed_pitchPID.D_Voltage+=Speed_pitchPID.Ideal_Now; 
-       }
-		else if(fabs(Speed_pitchPID.D_Voltage)<Speed_pitch_D_Voltage_MAX-(Speed_pitch_D_Voltage_MAX/4))
-		   {
-         index=1.0;
-				 Speed_pitchPID.D_Voltage+=Speed_pitchPID.Ideal_Now;
-			 }
-		else
-			{
-				index=1.0;
-//       index=(Speed_pitch_D_Voltage_MAX-fabs(Speed_pitchPID.D_Voltage))/(Speed_pitch_D_Voltage_MAX/4);
-			Speed_pitchPID.D_Voltage+=Speed_pitchPID.Ideal_Now;
-			}
-
-		
-	PID_pitch_Speed_out=PID_P_Speed_KP*Speed_pitchPID.Ideal_Now+
-	                    index*PID_P_Speed_KI*Speed_pitchPID.D_Voltage+
-	                    PID_P_Speed_KD*(Speed_pitchPID.Ideal_Now-Speed_pitchPID.Ideal_Last);
-	
-			
-			
-	PID_yawSpeed_value.ideal =PID_yaw_Position_out;
-  Speed_yawPID.Ideal_Last=Speed_yawPID.Ideal_Now;	
-	Speed_yawPID.Ideal_Now=PID_yawSpeed_value.ideal+PID_yawSpeed_value.actual;
-    if(Speed_yawPID.D_Voltage>Speed_yaw_D_Voltage_MAX)
-       {
-         index_1=1.0;
-				 if(Speed_yawPID.Ideal_Now<0)
-					Speed_yawPID.D_Voltage+=Speed_yawPID.Ideal_Now; 
-       }
-			 else if(Speed_yawPID.D_Voltage<Speed_yaw_D_Voltage_MIN)
-       {
-         index_1=1.0;
-				 if(Speed_yawPID.Ideal_Now>0)
-					Speed_yawPID.D_Voltage+=Speed_yawPID.Ideal_Now; 
-       }
-		else if(fabs(Speed_yawPID.D_Voltage)<Speed_yaw_D_Voltage_MAX-(Speed_yaw_D_Voltage_MAX/4))
-		   {
-         index_1=1.0;
-				 Speed_yawPID.D_Voltage+=Speed_yawPID.Ideal_Now;
-			 }
-		else
-			{
-				index_1=1.0;
-//       index_1=(Speed_yaw_D_Voltage_MAX-fabs(Speed_yawPID.D_Voltage))/(Speed_yaw_D_Voltage_MAX/4);
-			 Speed_yawPID.D_Voltage+=Speed_yawPID.Ideal_Now;
-			}
-
-		
-	PID_yaw_Speed_out=PID_Y_Speed_KP*Speed_yawPID.Ideal_Now+
-	                   index_1*PID_Y_Speed_KI*Speed_yawPID.D_Voltage+
-	                   PID_Y_Speed_KD*(Speed_yawPID.Ideal_Now-Speed_yawPID.Ideal_Last);
-
-			Set_Gimbal_Motor_Output();	
+{			
+	PID_pitchSpeed_value.ideal =PITCHPpid.pidout;
+	PID_yawSpeed_value.ideal =YAWPpid.pidout;
+	pid_calculate(&PITCHSpid,-PID_pitchSpeed_value.actual,-PID_pitchSpeed_value.ideal);
+	pid_calculate(&YAWSpid,-PID_yawSpeed_value.actual,-PID_yawSpeed_value.ideal);			
+	Set_Gimbal_Motor_Output();	
 }
-
-
-
 
 void PID_calculate_chassis_self(void)//底盘PID算法
 {
@@ -269,7 +112,5 @@ void PID_calculate_chassis_self(void)//底盘PID算法
 	pid_calculate(&CM3pid,CM3Encoder.rotor_speed,-PID_CM3_value.ideal);	
 	pid_calculate(&CM4pid,CM4Encoder.rotor_speed,-PID_CM4_value.ideal);	
 	Set_Gimbal_Motor_Output();
-	
-
 }
 
