@@ -8,18 +8,12 @@ extern RC_Ctl_t RC_Ctl;
 
 extern Gimbal_Ref_t gimbal_ref;				//云台数据
 
-extern PID_t Position_pitchPID;        //pitch位置环PID计算参数
-extern PID_t Position_yawPID;          //yaw位置环PID计算参数
-extern PID_t Speed_pitchPID;           //pitch速度环PID计算参数
-extern PID_t Speed_yawPID;             //yaw速度环PID计算参数
-extern PID_t CM1PID;
-extern PID_t CM2PID;
-extern PID_t CM3PID;
-extern PID_t CM4PID;
 extern pid_t CM1pid;
 extern pid_t CM2pid;
 extern pid_t CM3pid;
 extern pid_t CM4pid;
+extern pid_t YAWSpid;
+extern pid_t YAWPpid;
 
 extern PID_value_t PID_pitchPosition_value;  //pitch位置环理想值 实际值
 extern PID_value_t PID_yawPosition_value;    //yaw位置环理想值 实际值
@@ -34,13 +28,6 @@ extern PID_value_t PID_CM4_value;
 extern PID_Angle_Speed_t PID_Angle_Speed;
 extern PID_Angle_Speed_t PID_Angle_Speed;
 
-
-extern float PID_pitch_Position_out;
-extern float PID_yaw_Position_out;
-extern float PID_pitch_Speed_out;
-extern float PID_yaw_Speed_out;
-extern float PID_CM1_out;
-extern float PID_CM2_out;
 
 
 void Print_RC_Data(void)
@@ -64,19 +51,19 @@ void Print_PID_Data(void)
 	  OS_ERR err;
 	
     unsigned char i;         
-    unsigned char Send_Count=8;
+    unsigned char Send_Count=6;
 
-      DataScope_Get_Channel_Data(CM1pid.pidout, 1 );
-			DataScope_Get_Channel_Data(CM2pid.pidout, 2 );
-			DataScope_Get_Channel_Data(CM3pid.pidout, 3 );
-			DataScope_Get_Channel_Data(CM4pid.pidout, 4 );
-			DataScope_Get_Channel_Data(CM1pid.Voltage, 5 );
-			DataScope_Get_Channel_Data(CM2pid.Voltage, 6 );
-			DataScope_Get_Channel_Data(CM3pid.Voltage, 7 );
-			DataScope_Get_Channel_Data(CM4pid.Voltage, 8 );
+      DataScope_Get_Channel_Data(GMYawEncoder.ecd_angle, 1 );
+			DataScope_Get_Channel_Data(PID_yawPosition_value.ideal, 2 );
+			DataScope_Get_Channel_Data(PID_yawSpeed_value.actual, 3 );
+			DataScope_Get_Channel_Data(PID_yawSpeed_value.ideal, 4 );
+			DataScope_Get_Channel_Data(YAWPpid.pidout, 5 );
+			DataScope_Get_Channel_Data(YAWSpid.pidout, 6 );
+//			DataScope_Get_Channel_Data(CM3pid.Voltage, 7 );
+//			DataScope_Get_Channel_Data(CM4pid.Voltage, 8 );
 //			DataScope_Get_Channel_Data(PID_CM1_out, 9 );
 //			DataScope_Get_Channel_Data(PID_CM2_out, 10 );
-          Send_Count = DataScope_Data_Generate(8); 
+          Send_Count = DataScope_Data_Generate(6); 
           for( i = 0 ; i < Send_Count; i++) 
           {
              while((USART3->SR&0X40)==0);  
