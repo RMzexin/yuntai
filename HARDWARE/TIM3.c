@@ -31,9 +31,7 @@ void TIM3_IRQHandler(void)
 	OSIntEnter();
 	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) //溢出中断
 	{
-				Gimbal_RC_Mode();
-		PID_calculate_position_self();
-		PID_calculate_speed_self();
+
 	}
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);  //清除中断标志位
 	OSIntExit();
