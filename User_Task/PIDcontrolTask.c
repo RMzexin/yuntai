@@ -24,10 +24,10 @@ pid_t CM1pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000};
 pid_t CM2pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 pid_t CM3pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 pid_t CM4pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
-pid_t   YAWPpid={3.66,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000};
-pid_t PITCHPpid={3.5,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
-pid_t   YAWSpid={41.75,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
-pid_t PITCHSpid={40,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t   YAWPpid={10,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000};
+pid_t PITCHPpid={2.5,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t   YAWSpid={15,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t PITCHSpid={45,0,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
 
 PID_Angle_Speed_t PID_Angle_Speed;
 
@@ -58,14 +58,14 @@ void Chassis_And_Gimbal_Data_Init(void)
                    
  void Set_Gimbal_Motor_Output(void)	 //can Êä³ö
 {	
- 	Set_Gimbal_Current(CAN1, (int16_t)YAWSpid.pidout, (int16_t)PITCHSpid.pidout);	
-	//Set_CM_Speed(CAN1,(int16_t)CM1pid.pidout,(int16_t)CM2pid.pidout,(int16_t)CM3pid.pidout,(int16_t)CM4pid.pidout);
+ 	Set_Gimbal_Current(CAN1, (int16_t)0, (int16_t)0);	
+	Set_CM_Speed(CAN1,(int16_t)CM1pid.pidout,(int16_t)CM2pid.pidout,(int16_t)CM3pid.pidout,(int16_t)CM4pid.pidout);
 }
 
 
   void Gimbal_RC_Mode(void)          //Ò£¿ØÖµÐ´Èë
 {
-	
+	  mpu9250_assignment();// ÍÓÂÝÒÇ¸³Öµ
 	  gimbal_ref.pitch_angle_dynamic_ref -=((Get_ch3_Data()-1024)*STICK_TO_PITCH_ANGLE_INC_FACT) ;
     gimbal_ref.yaw_angle_dynamic_ref   -=((Get_ch2_Data()-1024)*STICK_TO_YAW_ANGLE_INC_FACT);
 		gimbal_ref.left_right_ref           =((Get_ch0_Data()-1024)*STICK_TO_FORWARD_BACK_ANGLE_INC_FACT) ;
