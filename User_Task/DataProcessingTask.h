@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-void Yuntai_angle_speed(float *pitch_speed , float *yaw_speed);
+void Yuntai_angle_speed(float *pitch_speed , float *yaw_speed, float *pluck_speed);
 	
 #endif
 
