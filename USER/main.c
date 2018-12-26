@@ -24,9 +24,7 @@ int main(void)
 	Initial_UART3(115200);
 		
 	delay_ms(500);
-	
-	Chassis_And_Gimbal_Data_Init();
-	PID_Init();
+	RAMP_INIT();
 //	LCD_Init();
 	RC_Init();
 
