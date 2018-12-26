@@ -21,6 +21,7 @@
 #include "PIDcontrolTask.h"
 #include "DataProcessingTask.h"
 #include "pid.h"
+#include "mpu9250.h"
 #include "includes.h"
 #include "os_app_hooks.h"
 
