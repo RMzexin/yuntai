@@ -7,18 +7,21 @@ unsigned char DataScope_OutPut_Buffer[42] = {0};
 extern RC_Ctl_t RC_Ctl;
 
 extern Gimbal_Ref_t gimbal_ref;				//云台数据
+extern mpu9250_t mpu9250;
 
 extern pid_t CM1pid;
 extern pid_t CM2pid;
 extern pid_t CM3pid;
 extern pid_t CM4pid;
-extern pid_t YAWSpid;
-extern pid_t YAWPpid;
+extern pid_t PLUCKSpid;
+extern pid_t PLUCKPpid;
 
 extern PID_value_t PID_pitchPosition_value;  //pitch位置环理想值 实际值
 extern PID_value_t PID_yawPosition_value;    //yaw位置环理想值 实际值
+extern PID_value_t PID_pluckPosition_value;    //拨弹位置环理想值 实际值
 extern PID_value_t PID_pitchSpeed_value;     //pitch速度环理想值 实际值
 extern PID_value_t PID_yawSpeed_value;       //yaw速度环理想值 实际值
+extern PID_value_t PID_pluckSpeed_value;       //拨弹速度环理想值 实际值
 extern PID_value_t PID_CM1_value;
 extern PID_value_t PID_CM2_value;
 extern PID_value_t PID_CM3_value;
@@ -51,26 +54,27 @@ void Print_PID_Data(void)
 	  OS_ERR err;
 	
     unsigned char i;         
-    unsigned char Send_Count=6;
+    unsigned char Send_Count=5;
 
-      DataScope_Get_Channel_Data(GMYawEncoder.ecd_angle, 1 );
-			DataScope_Get_Channel_Data(PID_yawPosition_value.ideal, 2 );
-			DataScope_Get_Channel_Data(PID_yawSpeed_value.actual, 3 );
-			DataScope_Get_Channel_Data(PID_yawSpeed_value.ideal, 4 );
-			DataScope_Get_Channel_Data(YAWPpid.pidout, 5 );
-			DataScope_Get_Channel_Data(YAWSpid.pidout, 6 );
+      DataScope_Get_Channel_Data(PID_yawPosition_value.ideal, 1 );
+			DataScope_Get_Channel_Data(GMYawEncoder.ecd_angle, 2 );
+			DataScope_Get_Channel_Data(PID_pluckSpeed_value.ideal, 3 );
+			DataScope_Get_Channel_Data(PID_pluckSpeed_value.actual, 4 );
+			DataScope_Get_Channel_Data(PLUCKSpid.pidout, 5 );
+//			DataScope_Get_Channel_Data(YAWSpid.pidout, 6 );
 //			DataScope_Get_Channel_Data(CM3pid.Voltage, 7 );
 //			DataScope_Get_Channel_Data(CM4pid.Voltage, 8 );
 //			DataScope_Get_Channel_Data(PID_CM1_out, 9 );
 //			DataScope_Get_Channel_Data(PID_CM2_out, 10 );
-          Send_Count = DataScope_Data_Generate(6); 
+          Send_Count = DataScope_Data_Generate(5); 
           for( i = 0 ; i < Send_Count; i++) 
           {
              while((USART3->SR&0X40)==0);  
             USART3->DR = DataScope_OutPut_Buffer[i]; 
           }
 					OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC,&err); 
-						
+//     printf("A%6.3f\r\nB%6.3f\r\nC%6.3f\r\nD%6.3f\r\n",(float)GMYawEncoder.ecd_angle,(float)mpu9250.stcGyroZ,(float)PID_yawSpeed_value.actual,(float)PID_yawSpeed_value.ideal);
+//    OSTimeDlyHMSM(0,0,0,50,OS_OPT_TIME_PERIODIC,&err); 
 //		sprintf(str, "PID_CM1_out: %6.3f",PID_CM1_out);
 //		LCD_ShowString(30, 50,500,30, 16, (u8 *)str);	
 //		sprintf(str, "CM1PID.D_Voltage: %6.3f",CM1PID.D_Voltage);
