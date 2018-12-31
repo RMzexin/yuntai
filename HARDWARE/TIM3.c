@@ -31,7 +31,7 @@ void TIM3_IRQHandler(void)
 	OSIntEnter();
 	if(TIM_GetITStatus(TIM3,TIM_IT_Update)==SET) //溢出中断
 	{
-
+		YUNTAI_SPEED();
 	}
 	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);  //清除中断标志位
 	OSIntExit();

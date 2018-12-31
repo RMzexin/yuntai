@@ -58,6 +58,8 @@
 ..\obj\can1.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\can1.o: ..\User_Task\DataProcessingTask.h
 ..\obj\can1.o: ..\algorithm\pid.h
+..\obj\can1.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\can1.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\can1.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\can1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\can1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -80,4 +82,5 @@
 ..\obj\can1.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\can1.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\can1.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\can1.o: ..\User_Task\FireTask.h
 ..\obj\can1.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h

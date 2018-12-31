@@ -57,6 +57,9 @@
 ..\obj\main.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\main.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\main.o: ..\User_Task\DataProcessingTask.h
+..\obj\main.o: ..\algorithm\pid.h
+..\obj\main.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\main.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\main.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -79,4 +82,5 @@
 ..\obj\main.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\main.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\main.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\main.o: ..\User_Task\FireTask.h
 ..\obj\main.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h

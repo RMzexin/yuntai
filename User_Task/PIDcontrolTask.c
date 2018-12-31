@@ -4,7 +4,6 @@
 RampGen_t GMPitchRamp = RAMP_GEN_DAFAULT;
 RampGen_t   GMYawRamp = RAMP_GEN_DAFAULT;
 RampGen_t GMPluckRamp = RAMP_GEN_DAFAULT;
-extern RC_Ctl_t RC_Ctl;
 
 Gimbal_Ref_t gimbal_ref;				//云台数据
 
@@ -30,12 +29,12 @@ pid_t CM1pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000};
 pid_t CM2pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 pid_t CM3pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
 pid_t CM4pid={100,3.3,5,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,16000,-16000}; 
-pid_t   YAWPpid={3.4,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000};
-pid_t PITCHPpid={4.1,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
-pid_t   YAWSpid={21.75,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
-pid_t PITCHSpid={21.75,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
-pid_t PLUCKPpid={1.2,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
-pid_t PLUCKSpid={1.4,0.12,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,10000,-10000}; 
+pid_t   YAWPpid={4.665,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000};
+pid_t PITCHPpid={4.1,0.06,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t   YAWSpid={61.75,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t PITCHSpid={62.75,0.145,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t PLUCKPpid={1.4,0,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,5000,-5000}; 
+pid_t PLUCKSpid={1.6,0.12,0,0,0,0,0,0,0,0,0,0,0,1000,-1000,0,0,0,0,10000,-10000}; 
 
 PID_Angle_Speed_t PID_Angle_Speed;
 
@@ -67,8 +66,8 @@ void RAMP_INIT()
                    
 void Set_Gimbal_Motor_Output(void)	 //can 输出
 {	
- 	//Set_Gimbal_Current(CAN1, (int16_t)YAWSpid.pidout, (int16_t)PITCHSpid.pidout, (int16_t)PLUCKSpid.pidout);
-  Set_Gimbal_Current(CAN1, (int16_t)0, (int16_t)0, (int16_t)0);	
+ 	Set_Gimbal_Current(CAN1, (int16_t)YAWSpid.pidout, (int16_t)PITCHSpid.pidout, (int16_t)PLUCKSpid.pidout);
+  //Set_Gimbal_Current(CAN1, (int16_t)0, (int16_t)0, (int16_t)0);	
 	Set_CM_Speed(CAN1,(int16_t)CM1pid.pidout,(int16_t)CM2pid.pidout,(int16_t)CM3pid.pidout,(int16_t)CM4pid.pidout);
 }
 
@@ -78,7 +77,7 @@ void Gimbal_RC_Mode(void)          //遥控值写入
 	  mpu9250_assignment();// 陀螺仪赋值
 	  gimbal_ref.pitch_angle_dynamic_ref -=((Get_ch3_Data()-1024)*STICK_TO_PITCH_ANGLE_INC_FACT) ;
     gimbal_ref.yaw_angle_dynamic_ref   -=((Get_ch2_Data()-1024)*STICK_TO_YAW_ANGLE_INC_FACT);
-	  gimbal_ref.pluck_angle_dynamic_ref +=PLUCK();
+	  gimbal_ref.pluck_angle_dynamic_ref -=PLUCK();
 		gimbal_ref.left_right_ref           =((Get_ch0_Data()-1024)*STICK_TO_FORWARD_BACK_ANGLE_INC_FACT) ;
     gimbal_ref.forward_back_ref         =((Get_ch1_Data()-1024)*STICK_TO_LEFT_RIGHT_ANGLE_INC_FACT);
 	  
@@ -95,26 +94,6 @@ void Gimbal_RC_Mode(void)          //遥控值写入
 	/* not used to control, just as a flag */ 
     gimbal_ref.pitch_speed_ref =(Get_ch3_Data()-1024);    //speed_ref仅做输入量判断用
     gimbal_ref.yaw_speed_ref   =(Get_ch2_Data()-1024);	
-}
-float  PLUCK()
-{
-	static Bool first = true;
-	if(RC_Ctl.rc.s1==3&&first)
-	{
-		first = false;
-		return 360.0*PLUCK_RATIO/7.0;
-	}
-	else if(RC_Ctl.rc.s1==1&&first==false)
-	{
-	  first = true;
-		GMPluckRamp.ResetCounter(&GMPluckRamp);
-		return 0;
-	}
-	else
-	{
-		GMPluckRamp.ResetCounter(&GMPluckRamp);
-		return 0;
-	}
 }
 
 

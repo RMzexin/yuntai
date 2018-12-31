@@ -53,28 +53,30 @@ void Print_PID_Data(void)
 
 	  OS_ERR err;
 	
-    unsigned char i;         
-    unsigned char Send_Count=5;
+//    unsigned char i;         
+//    unsigned char Send_Count=5;
 
-      DataScope_Get_Channel_Data(PID_yawPosition_value.ideal, 1 );
-			DataScope_Get_Channel_Data(GMYawEncoder.ecd_angle, 2 );
-			DataScope_Get_Channel_Data(PID_pluckSpeed_value.ideal, 3 );
-			DataScope_Get_Channel_Data(PID_pluckSpeed_value.actual, 4 );
-			DataScope_Get_Channel_Data(PLUCKSpid.pidout, 5 );
-//			DataScope_Get_Channel_Data(YAWSpid.pidout, 6 );
-//			DataScope_Get_Channel_Data(CM3pid.Voltage, 7 );
-//			DataScope_Get_Channel_Data(CM4pid.Voltage, 8 );
-//			DataScope_Get_Channel_Data(PID_CM1_out, 9 );
-//			DataScope_Get_Channel_Data(PID_CM2_out, 10 );
-          Send_Count = DataScope_Data_Generate(5); 
-          for( i = 0 ; i < Send_Count; i++) 
-          {
-             while((USART3->SR&0X40)==0);  
-            USART3->DR = DataScope_OutPut_Buffer[i]; 
-          }
-					OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC,&err); 
-//     printf("A%6.3f\r\nB%6.3f\r\nC%6.3f\r\nD%6.3f\r\n",(float)GMYawEncoder.ecd_angle,(float)mpu9250.stcGyroZ,(float)PID_yawSpeed_value.actual,(float)PID_yawSpeed_value.ideal);
-//    OSTimeDlyHMSM(0,0,0,50,OS_OPT_TIME_PERIODIC,&err); 
+//      DataScope_Get_Channel_Data(PID_yawPosition_value.ideal, 1 );
+//			DataScope_Get_Channel_Data(GMYawEncoder.ecd_angle, 2 );
+//			DataScope_Get_Channel_Data(PID_pluckSpeed_value.ideal, 3 );
+//			DataScope_Get_Channel_Data(PID_pluckSpeed_value.actual, 4 );
+//			DataScope_Get_Channel_Data(PLUCKSpid.pidout, 5 );
+////			DataScope_Get_Channel_Data(YAWSpid.pidout, 6 );
+////			DataScope_Get_Channel_Data(CM3pid.Voltage, 7 );
+////			DataScope_Get_Channel_Data(CM4pid.Voltage, 8 );
+////			DataScope_Get_Channel_Data(PID_CM1_out, 9 );
+////			DataScope_Get_Channel_Data(PID_CM2_out, 10 );
+//          Send_Count = DataScope_Data_Generate(5); 
+//          for( i = 0 ; i < Send_Count; i++) 
+//          {
+//             while((USART3->SR&0X40)==0);  
+//            USART3->DR = DataScope_OutPut_Buffer[i]; 
+//          }
+//					OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC,&err); 
+					
+     printf("A%6.3f\r\nB%6.3f\r\nC%6.3f\r\nD%6.3f\r\n",(float)PID_yawPosition_value.ideal,(float)GMYawEncoder.ecd_angle,(float)PID_pitchPosition_value.ideal,(float)GMPitchEncoder.ecd_angle);
+    OSTimeDlyHMSM(0,0,0,50,OS_OPT_TIME_PERIODIC,&err); 
+					
 //		sprintf(str, "PID_CM1_out: %6.3f",PID_CM1_out);
 //		LCD_ShowString(30, 50,500,30, 16, (u8 *)str);	
 //		sprintf(str, "CM1PID.D_Voltage: %6.3f",CM1PID.D_Voltage);

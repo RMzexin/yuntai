@@ -50,6 +50,7 @@
 "..\obj\lcd.o"
 "..\obj\usart2.o"
 "..\obj\usart3.o"
+"..\obj\mpu9250.o"
 "..\obj\bsp.o"
 "..\obj\cpu_c.o"
 "..\obj\cpu_core.o"
@@ -85,7 +86,9 @@
 "..\obj\pidcontroltask.o"
 "..\obj\starttask.o"
 "..\obj\dataprocessingtask.o"
+"..\obj\firetask.o"
 "..\RmLib\RMLib.lib"
+"..\obj\pid.o"
 --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

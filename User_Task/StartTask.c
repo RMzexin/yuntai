@@ -67,20 +67,6 @@ void start_task(void *p_arg)
                  (void   	* )0,					
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
                  (OS_ERR 	* )&err);
-	//创建sprintf任务							 
-//OSTaskCreate((OS_TCB 	* )&Sprintf_TaskTCB,		
-//				 (CPU_CHAR	* )"printf task", 		
-//                 (OS_TASK_PTR )sprintf_task, 			
-//                 (void		* )0,					
-//                 (OS_PRIO	  )SPRINTF_TASK_PRIO,     
-//                 (CPU_STK   * )&SPRINTF_TASK_STK[0],	
-//                 (CPU_STK_SIZE)SPRINTF_STK_SIZE/10,	
-//                 (CPU_STK_SIZE)SPRINTF_STK_SIZE,		
-//                 (OS_MSG_QTY  )0,					
-//                 (OS_TICK	  )2,  					
-//                 (void   	* )0,					
-//                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
-//                 (OS_ERR 	* )&err);
 	OS_CRITICAL_EXIT();	//退出临界区
 	OSTaskDel((OS_TCB*)0,&err);	//删除start_task任务自身
 }
@@ -96,6 +82,7 @@ void task1_task(void *p_arg)
 		{
 			RC_Init();
 		}
+		SHORT();
 		Print_PID_Data();
 //		Print_RC_Data();
 		}
@@ -103,8 +90,9 @@ void task1_task(void *p_arg)
 
 void tmr1_callback(void *p_tmr, void *p_arg)
 {
-
-	  PID_calculate_chassis_self();
+	Gimbal_RC_Mode();
+	PID_calculate_position_self();
+  PID_calculate_chassis_self();
 }
 	
 

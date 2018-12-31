@@ -11,10 +11,13 @@ typedef struct
 {
     float pitch_angle_dynamic_ref;
     float yaw_angle_dynamic_ref;
+   	float pluck_angle_dynamic_ref;
     float pitch_angle_static_ref;
     float yaw_angle_static_ref;
+	  float pluck_angle_static_ref;
     float pitch_speed_ref;
     float yaw_speed_ref;
+	  float pluck_speed_ref;
 	
 	  float forward_back_ref;
     float left_right_ref;	
@@ -45,6 +48,9 @@ typedef struct
 	
 	float Yaw_Speed_NOW;
 	float Yaw_Speed_LAST;
+	
+	float Pluck_Speed_NOW;
+	float Pluck_Speed_LAST;
 }PID_Angle_Speed_t;
 
 
@@ -60,27 +66,7 @@ else if(val>=max)\
 
 
 #define PREPARE_TIME_TICK_MS 4000      //prapare time in ms
-
-#define Position_pitch_D_Voltage_MAX +4000.0f
-#define Position_pitch_D_Voltage_MIN -4000.0f
-#define Position_yaw_D_Voltage_MAX +4000.0f
-#define Position_yaw_D_Voltage_MIN -4000.0f
-#define Speed_pitch_D_Voltage_MAX +8000.0f
-#define Speed_pitch_D_Voltage_MIN -8000.0f
-#define Speed_yaw_D_Voltage_MAX +8000.0f
-#define Speed_yaw_D_Voltage_MIN -8000.0f
-
-#define CM1_D_Voltage_MIN -1000.0f
-#define CM2_D_Voltage_MIN -1000.0f
-#define CM3_D_Voltage_MIN -1000.0f
-#define CM4_D_Voltage_MIN -1000.0f
-#define CM1_D_Voltage_MAX +1000.0f
-#define CM2_D_Voltage_MAX +1000.0f
-#define CM3_D_Voltage_MAX +1000.0f
-#define CM4_D_Voltage_MAX +1000.0f
-
-#define CHASSIS_OUT_MIN   -16000.0f
-#define CHASSIS_OUT_MAX   +16000.0f
+#define PLUCK_RATIO          36        //²¦µ¯ÂÖ¼õËÙ±È
 
 
 //#define PID_P_Position_KP 4.032f
@@ -140,8 +126,8 @@ else if(val>=max)\
 #define D_Value_Y_Voltage_MAX   500
 
 //ÔÆÌ¨ÁéÃô¶È
-#define STICK_TO_PITCH_ANGLE_INC_FACT       0.0018f   
-#define STICK_TO_YAW_ANGLE_INC_FACT         0.0018f
+#define STICK_TO_PITCH_ANGLE_INC_FACT       0.0028f   
+#define STICK_TO_YAW_ANGLE_INC_FACT         0.0028f
 
 #define STICK_TO_FORWARD_BACK_ANGLE_INC_FACT       3.68f   
 #define STICK_TO_LEFT_RIGHT_ANGLE_INC_FACT         3.68f
@@ -149,6 +135,7 @@ else if(val>=max)\
 
 
 void Chassis_And_Gimbal_Data_Init(void);
+void RAMP_INIT(void);
 void PID_Init(void);
 void Set_Gimbal_Motor_Output(void);
 void Gimbal_RC_Mode(void);

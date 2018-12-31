@@ -59,6 +59,9 @@
 ..\obj\lcd.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\lcd.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\lcd.o: ..\User_Task\DataProcessingTask.h
+..\obj\lcd.o: ..\algorithm\pid.h
+..\obj\lcd.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\lcd.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\lcd.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\lcd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\lcd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -81,5 +84,6 @@
 ..\obj\lcd.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\lcd.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\lcd.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\lcd.o: ..\User_Task\FireTask.h
 ..\obj\lcd.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h
 ..\obj\lcd.o: ..\SYSTEM\LCD\font.h

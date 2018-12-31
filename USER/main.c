@@ -27,10 +27,8 @@ int main(void)
 	RAMP_INIT();
 //	LCD_Init();
 	RC_Init();
-
-	
-	TIM3_Int_Init(40-1,8400-1);
-	TIM4_Int_Init(10-1,8400-1);
+	TIM3_Int_Init(10-1,8400-1);
+	Friction_Wheel_Init(4000-1,84-1);
 	
 	
 	OSInit(&err);//≥ı ºªØUCOSiii

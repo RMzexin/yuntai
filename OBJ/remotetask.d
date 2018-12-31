@@ -59,6 +59,9 @@
 ..\obj\remotetask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\remotetask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\remotetask.o: ..\User_Task\DataProcessingTask.h
+..\obj\remotetask.o: ..\algorithm\pid.h
+..\obj\remotetask.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\remotetask.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\remotetask.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\remotetask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\remotetask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -81,4 +84,5 @@
 ..\obj\remotetask.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\remotetask.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\remotetask.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\remotetask.o: ..\User_Task\FireTask.h
 ..\obj\remotetask.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h

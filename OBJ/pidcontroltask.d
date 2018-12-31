@@ -57,6 +57,9 @@
 ..\obj\pidcontroltask.o: ..\User_Task\RemoteTask.h
 ..\obj\pidcontroltask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\pidcontroltask.o: ..\User_Task\DataProcessingTask.h
+..\obj\pidcontroltask.o: ..\algorithm\pid.h
+..\obj\pidcontroltask.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\pidcontroltask.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\pidcontroltask.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\pidcontroltask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\pidcontroltask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -79,4 +82,5 @@
 ..\obj\pidcontroltask.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\pidcontroltask.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\pidcontroltask.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\pidcontroltask.o: ..\User_Task\FireTask.h
 ..\obj\pidcontroltask.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h

@@ -3,6 +3,13 @@
 u8 USART3_RX_BUF[USART3_REC_LEN];  
 u16 USART3_RX_STA=0;       //接收状态标记	
 
+int fputc(int ch, FILE *f)
+{ 	
+	while((USART3->SR&0X40)==0);//循环发送,直到发送完毕   
+	USART3->DR = (u8) ch;      
+	return ch;
+}
+
 void Initial_UART3(unsigned long baudrate)
 {
 
@@ -89,3 +96,5 @@ void USART3_IRQHandler(void)
 }
 
 	
+
+

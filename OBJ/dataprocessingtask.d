@@ -58,6 +58,9 @@
 ..\obj\dataprocessingtask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\dataprocessingtask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\dataprocessingtask.o: ..\User_Task\DataProcessingTask.h
+..\obj\dataprocessingtask.o: ..\algorithm\pid.h
+..\obj\dataprocessingtask.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\dataprocessingtask.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\dataprocessingtask.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\dataprocessingtask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\dataprocessingtask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -80,4 +83,5 @@
 ..\obj\dataprocessingtask.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\dataprocessingtask.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\dataprocessingtask.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\dataprocessingtask.o: ..\User_Task\FireTask.h
 ..\obj\dataprocessingtask.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h

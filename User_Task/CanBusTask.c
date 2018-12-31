@@ -9,6 +9,7 @@ volatile Encoder CM3Encoder = {0,0,0,0,0,0,0,0,0};
 volatile Encoder CM4Encoder = {0,0,0,0,0,0,0,0,0};
 volatile Encoder GMYawEncoder = {0,0,0,0,0,0,0,0,0};
 volatile Encoder GMPitchEncoder = {0,0,0,0,0,0,0,0,0};
+volatile Encoder GMPluckEncoder = {0,0,0,0,0,0,0,0,0};
 float ZGyroModuleAngle = 0.0f;
 /*
 ***********************************************************************************************
@@ -43,6 +44,31 @@ float Yaw_Angle_Precision_Filter(volatile Encoder *Y)	//精准值   +-0.05°
 		yaw_angle_temp = Y->ecd_angle;
 		
 		return Y->ecd_angle;
+	}
+}
+
+float Pluck_Angle_Precision_Filter(volatile Encoder *L)	//精准值   +-0.05°
+{
+	static Bool first = true;
+	static float pluck_angle_temp = 0;
+	
+	if(first == true)
+	{
+		first = false;
+		pluck_angle_temp = L->ecd_angle;
+		
+		return pluck_angle_temp;
+	}
+	 
+	if( fabs(L->ecd_angle - pluck_angle_temp) <= 0.05 )
+	{
+		return pluck_angle_temp;
+	}
+	else 
+	{
+		pluck_angle_temp = L->ecd_angle;
+		
+		return L->ecd_angle;
 	}
 }
 
@@ -157,9 +183,12 @@ void EncoderProcess(volatile Encoder *v, CanRxMsg * msg)
 */
 void CanReceiveMsgProcess(CanRxMsg * msg)
 { 
-   LED0 =LED0 ;	
-        //GMYawEncoder.ecd_bias = yaw_ecd_bias;
-        can_count++;
+  can_count++;
+	static Bool first = true;
+	if(can_count<=5&&first){
+		Chassis_And_Gimbal_Data_Init();}
+	if(can_count==5&&first){
+		first = false ;}
 		switch(msg->StdId)
 		{
 				case CAN_BUS2_MOTOR1_FEEDBACK_MSG_ID:
@@ -216,6 +245,12 @@ void CanReceiveMsgProcess(CanRxMsg * msg)
 								 GMPitchEncoder.ecd_bias =0 - 8192;
 							 }
 						 }
+				}break;	
+        case CAN_BUS2_MOTOR7_FEEDBACK_MSG_ID:
+				{
+					 EncoderProcess(&GMPluckEncoder ,msg);
+           GMPluckEncoder.ecd_angle = Pluck_Angle_Precision_Filter(&GMPluckEncoder);					
+
 				}break;				
 /*				case CAN_BUS1_ZGYRO_FEEDBACK_MSG_ID:
 				{
@@ -260,7 +295,7 @@ void Set_CM_Speed(CAN_TypeDef *CANx, int16_t cm1_iq, int16_t cm2_iq, int16_t cm3
    给电调板发送指令，ID号为0x1FF，只用两个电调板，数据回传ID为0x205和0x206
 	 cyq:更改为发送三个电调的指令。
 *********************************************************************************/
-void Set_Gimbal_Current(CAN_TypeDef *CANx, int16_t gimbal_yaw_iq, int16_t gimbal_pitch_iq)
+void Set_Gimbal_Current(CAN_TypeDef *CANx, int16_t gimbal_yaw_iq, int16_t gimbal_pitch_iq,int16_t gimbal_pluck_iq)
 {
     CanTxMsg tx_message;    
     tx_message.StdId = 0x1FF;
@@ -272,8 +307,8 @@ void Set_Gimbal_Current(CAN_TypeDef *CANx, int16_t gimbal_yaw_iq, int16_t gimbal
     tx_message.Data[1] = (unsigned char)gimbal_yaw_iq;
     tx_message.Data[2] = (unsigned char)(gimbal_pitch_iq >> 8);
     tx_message.Data[3] = (unsigned char)gimbal_pitch_iq;
-    tx_message.Data[4] = 0x00;
-    tx_message.Data[5] = 0x00; 
+    tx_message.Data[4] = (unsigned char)(gimbal_pluck_iq >> 8);
+    tx_message.Data[5] = (unsigned char)gimbal_pluck_iq; 
     tx_message.Data[6] = 0x00;
     tx_message.Data[7] = 0x00;
     CAN_Transmit(CANx,&tx_message);

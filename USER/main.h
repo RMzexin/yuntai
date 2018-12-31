@@ -23,6 +23,7 @@
 #include "pid.h"
 #include "mpu9250.h"
 #include "includes.h"
+#include "FireTask.h"
 #include "os_app_hooks.h"
 
 //void start_task(void *p_arg);

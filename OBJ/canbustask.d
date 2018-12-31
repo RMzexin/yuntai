@@ -58,6 +58,9 @@
 ..\obj\canbustask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\canbustask.o: ..\User_Task\PIDcontrolTask.h
 ..\obj\canbustask.o: ..\User_Task\DataProcessingTask.h
+..\obj\canbustask.o: ..\algorithm\pid.h
+..\obj\canbustask.o: ..\SYSTEM\mpu9250\mpu9250.h
+..\obj\canbustask.o: ..\SYSTEM\mpu9250\JY901.h
 ..\obj\canbustask.o: ..\UCOSIII\uCOS_CONFIG\includes.h
 ..\obj\canbustask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\canbustask.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -80,4 +83,5 @@
 ..\obj\canbustask.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\canbustask.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\canbustask.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\canbustask.o: ..\User_Task\FireTask.h
 ..\obj\canbustask.o: ..\UCOSIII\uCOS_CONFIG\os_app_hooks.h
